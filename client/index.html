@@ -4,16 +4,44 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
   <title>socmed</title>
 </head>
 <body>
-  <p>New Tweet:</p>
-  <form>
-    <input type="text" name="tweet">
-    <button type="button">Tweet!</button>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+         <h1>Twatt</h1>
+          <div class="navbar-burger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </nav>
+  
+  <br/>
+  <form class= 'form-inline' action='' method = "post">
+      Search:
+      <input class = "input" id="search" type="text" name="tweet">
+      <button id="search_tweet" onlclick = "searchTweet()" type="button">Search!</button>
+    </form>
+
+  <form class= 'form-inline' action='' method = "post">
+    New motivational tweet:
+    <input class = "input" id="tweet" type="text" name="tweet">
+    <button id="post_tweet"type="button">Tweet!</button>
   </form>
   <br/>
+  <br/>
+  
   <div id="timeline"></div>
+
+
+
+
+
+  
     <script
     src="https://code.jquery.com/jquery-3.3.1.min.js"
     integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
@@ -25,16 +53,100 @@
       method: "GET",
       dataType: "json",
       success:function(respon){
-        console.log(respon.timeline)
+        // console.log(respon.timeline)
         respon.timeline.map(data=>{
-          $('#timeline').append(data.text+'<br/>')
+          // $('#timeline').append(`<img src = "${data.user.profile_image_url}">`+data.created_at+' : '+data.text+'<br/>')
+          $('#timeline').append(`<div class="box">
+          <article class="media">
+            <div class="media-left">
+              <figure class="image is-64x64">
+                <img src="${data.user.profile_image_url}" alt="Image">
+              </figure>
+            </div>
+            <div class="media-content">
+              <div class="content">
+                <p>
+                  <strong>${data.user.name}</strong> <small>${data.user.screen_name}</small> <small>${data.created_at}</small>
+                  <br>
+                  ${data.text}
+                </p>
+              </div>
+            </div>
+          </article>
+        </div>`)
+
         })
       },
       fail:function(error){
         console.log(error)
       }
     });
+
+    $('#post_tweet').click(()=>{
+      console.log('masuk sini')
+      console.log($('#tweet').val())
+      $.ajax({
+        type: "POST",
+        url: "http://localhost:3000/twatt",
+        data : {
+          tweet:$('#tweet').val()
+        },
+        dataType: 'string',
+        success:function(respon){
+          console.log(respon.text,"ini responya")
+          $('#timeline').prepend($('#tweet').val())
+          location.reload()
+          
+        },
+        fail: function(err) {
+          console.log('err', err)
+        },
+        
+      })
+    })
+    function searchTweet(){
+      let search = document.getElementById('search_tweet').value
+      console.log(search)
+      $.ajax({
+      type:"GET",
+      url:"http://localhost:3000/twatt/search",
+      data:{
+        name:search
+      },
+      dataType:"json",
+      success:function(respon){
+        console.log(respon)
+        console.log(data)
+      },
+      fail:function(err){
+        console.log(err)
+      }
+
+    })
+  
+    }
     
+    
+    // function postTweet() {
+    //   console.log('masuk')
+    //   $.ajax({
+    //     type: "get",
+    //     url: "http://localhost:3000/twatt",
+    //     success:function(respon){
+    //       console.log(respon)
+    //     },
+    //     fail: function(err) {
+    //       console.log('err', err)
+    //     },
+    //     dataType: 'json',
+    //   })
+      // var xhr = new XMLHttpRequest()
+      // xhr.open('POST','http://localhost:3000/twatt', true)
+      // var dataInput = document.getElementById('tweet').value
+      // console.log(dataInput)
+      // xhr.send(`tweet=cobasajakok`)
+    // }
+
 </script>
   
 </body>

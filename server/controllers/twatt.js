@@ -32,6 +32,7 @@ module.exports ={
       });
   },
   createTweet : (req,res)=>{
+    console.log(req.body)
     console.log(req.body.tweet,"========")
     oauth.post(
       'https://api.twitter.com/1.1/statuses/update.json?status='+req.body.tweet,
@@ -50,6 +51,7 @@ module.exports ={
     )
   },
   searchTweet: (req,res)=>{
+    console.log(req.query.name,"queryname=====")
     oauth.get(
       'https://api.twitter.com/1.1/search/tweets.json?q='+req.query.name,
       process.env.tokenKey,
