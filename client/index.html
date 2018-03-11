@@ -86,14 +86,14 @@
       console.log('masuk sini')
       console.log($('#tweet').val())
       $.ajax({
-        type: "POST",
         url: "http://localhost:3000/twatt",
+        method: "POST",
         data : {
           tweet:$('#tweet').val()
         },
-        dataType: 'string',
+        dataType: 'json',
         success:function(respon){
-          console.log(respon.text,"ini responya")
+          console.log(respon,"ini responya")
           $('#timeline').prepend($('#tweet').val())
           location.reload()
           
@@ -104,48 +104,46 @@
         
       })
     })
-    function searchTweet(){
-      let search = document.getElementById('search_tweet').value
+    $('#search_tweet').click(()=>{
+      // let search = document.getElementById('search_tweet').value
       console.log(search)
       $.ajax({
-      type:"GET",
-      url:"http://localhost:3000/twatt/search",
-      data:{
-        name:search
-      },
-      dataType:"json",
-      success:function(respon){
-        console.log(respon)
-        console.log(data)
-      },
-      fail:function(err){
-        console.log(err)
-      }
+        url:"http://localhost:3000/twatt/search",
+        method:"GET",
+        data:{
+          name:$("#search").val()
+        },
+        dataType:"json",
+        success:function(respon){
+          console.log(respon.result)
+          respon.result.statuses.map(result=>{
+            $('#timeline').prepend(`<div class="box">
+          <article class="media">
+            <div class="media-left">
+              <figure class="image is-64x64">
+                <img src="${result.user.profile_image_url}" alt="Image">
+              </figure>
+            </div>
+            <div class="media-content">
+              <div class="content">
+                <p>
+                  <strong>${result.user.name}</strong> <small>${result.user.screen_name}</small> <small>${result.created_at}</small>
+                  <br>
+                  ${result.text}
+                </p>
+              </div>
+            </div>
+          </article>
+        </div>`)
+          })
+        },
+        fail:function(err){
+          console.log(err)
+        }
 
-    })
-  
-    }
-    
-    
-    // function postTweet() {
-    //   console.log('masuk')
-    //   $.ajax({
-    //     type: "get",
-    //     url: "http://localhost:3000/twatt",
-    //     success:function(respon){
-    //       console.log(respon)
-    //     },
-    //     fail: function(err) {
-    //       console.log('err', err)
-    //     },
-    //     dataType: 'json',
-    //   })
-      // var xhr = new XMLHttpRequest()
-      // xhr.open('POST','http://localhost:3000/twatt', true)
-      // var dataInput = document.getElementById('tweet').value
-      // console.log(dataInput)
-      // xhr.send(`tweet=cobasajakok`)
-    // }
+      })
+   })
+      
 
 </script>
   
